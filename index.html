@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rv.asun.recargas 💎</title>
+  <style>
+    :root {
+      --bg-color: #0b0b16;
+      --card-bg: #151528;
+      --accent-pink: #ff2a8d;
+      --accent-purple: #9b4dff;
+      --accent-green: #00ff88;
+      --text-main: #ffffff;
+      --text-muted: #a0a0c0;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0;
+      display: flex; flex-direction: column; align-items: center;
+      padding-bottom: 90px;
+    }
+
+    /* POPUP INICIAL DE BIENVENIDA */
+    #welcome-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85); display: flex; align-items: center; justify-content: center;
+      z-index: 999999; backdrop-filter: blur(5px);
+    }
+    .modal-content {
+      background: linear-gradient(145deg, #181830, #0f0f1a);
+      border: 2px solid #ff2a8d; width: 90%; max-width: 380px;
+      border-radius: 20px; padding: 24px; text-align: center;
+      box-shadow: 0 0 30px rgba(255, 42, 141, 0.4);
+    }
+    .modal-badge-r {
+      width: 60px; height: 60px; background: #000; color: #fff;
+      border: 2px solid #fff; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-size: 28px;
+      font-weight: 900; margin: 0 auto 15px auto;
+      box-shadow: 0 0 15px rgba(255,255,255,0.9); text-shadow: 0 0 8px #fff;
+    }
+    .modal-content h2 { font-size: 20px; margin: 0 0 8px 0; color: #fff; }
+    .modal-content p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4; }
+    .modal-btn-wa {
+      display: block; background: linear-gradient(135deg, #25D366, #128C7E);
+      color: white; text-decoration: none; padding: 12px; border-radius: 12px;
+      font-weight: bold; font-size: 14px; margin-bottom: 10px;
+    }
+    .modal-btn-close {
+      background: transparent; border: 1px solid #444; color: var(--text-muted);
+      padding: 10px; border-radius: 12px; width: 100%; font-size: 13px; cursor: pointer;
+    }
+
+    /* HEADER Y FACHADA */
+    header {
+      width: 100%; max-width: 480px; background: var(--card-bg);
+      border-radius: 0 0 24px 24px; padding: 20px; box-sizing: border-box;
+      text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+      border-bottom: 1px solid #2a2a48;
+    }
+    h1 { font-size: 22px; margin: 5px 0; color: #ff85b3; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .sub-title { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+    .wa-channel-banner {
+      display: inline-block; background: linear-gradient(135deg, #25D366, #128C7E);
+      color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px;
+      font-size: 12px; font-weight: bold;
+    }
+
+    .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
+    .section-title { font-size: 16px; color: #ff85b3; margin: 20px 0 10px 0; font-weight: bold; }
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .item-card {
+      background: var(--card-bg); border: 1px solid #2a2a48;
+      border-radius: 14px; padding: 14px; text-align: center;
+    }
+    .item-card h3 { font-size: 13px; margin: 0 0 6px 0; }
+    .price { font-size: 14px; color: var(--accent-green); font-weight: bold; margin-bottom: 10px; }
+    .buy-btn {
+      background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+      color: white; border: none; padding: 6px 12px; border-radius: 8px;
+      font-size: 11px; font-weight: bold; cursor: pointer; width: 100%;
+    }
+
+    /* CONTROLES DE TOKENS Y CAJAS */
+    .calc-box {
+      background: var(--card-bg); border: 1px solid #2a2a48;
+      border-radius: 14px; padding: 14px; margin-bottom: 10px;
+    }
+    .calc-box h3 { font-size: 13px; margin: 0 0 6px 0; color: #ff85b3; }
+    .calc-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+    .calc-controls input {
+      width: 60px; background: #0b0b16; border: 1px solid #444;
+      border-radius: 8px; color: #fff; text-align: center; padding: 6px; font-weight: bold;
+    }
+    .calc-total { font-size: 13px; color: var(--accent-green); font-weight: bold; }
+
+    /* RESEÑAS BLOQUEADAS */
+    .reviews-box {
+      background: var(--card-bg); border-radius: 14px; padding: 14px;
+      border: 1px solid #2a2a48; margin-top: 20px;
+    }
+    .review-item { font-size: 12px; border-bottom: 1px solid #22223b; padding: 8px 0; }
+    .review-author { font-weight: bold; color: #ff85b3; }
+
+    /* BOTÓN FLOTANTE "R" BRILLANTE */
+    #asun-floating-btn {
+      position: fixed; top: 50%; right: 15px; transform: translateY(-50%);
+      width: 52px; height: 52px; background: #000000; color: #ffffff;
+      border: 2px solid rgba(255, 255, 255, 0.9); border-radius: 50%;
+      font-weight: 900; font-size: 22px; cursor: grab;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 4px 10px rgba(0,0,0,0.8);
+      z-index: 99999; display: flex; align-items: center; justify-content: center;
+      user-select: none; touch-action: none; text-shadow: 0 0 10px #fff;
+    }
+
+    /* VENTANA DE CHAT / PANEL CREADORA */
+    #asun-chat-box {
+      display: none; position: fixed; bottom: 90px; right: 20px;
+      width: 320px; max-width: 90vw; background: #1a1a2e; color: #fff;
+      border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      z-index: 99998; border: 1px solid #333355; overflow: hidden;
+    }
+    .chat-header {
+      background: #000; padding: 12px 16px; display: flex;
+      justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px;
+    }
+    .chat-header span { font-size: 11px; display: block; font-weight: normal; color: #aaa; }
+    .close-chat { background: none; border: none; color: white; font-size: 18px; cursor: pointer; }
+    .chat-messages {
+      height: 230px; padding: 12px; overflow-y: auto; display: flex;
+      flex-direction: column; gap: 10px; background: #121222;
+    }
+    .msg-bot, .msg-user, .msg-admin {
+      padding: 10px 13px; border-radius: 12px; font-size: 13px; line-height: 1.4; max-width: 85%;
+    }
+    .msg-bot { background: #252542; align-self: flex-start; }
+    .msg-user { background: #ffffff; color: #000; align-self: flex-end; font-weight: 500; }
+    .msg-admin { background: #ff2a8d; color: #fff; align-self: flex-end; font-weight: 500; }
+    
+    .chat-input-area {
+      display: flex; padding: 10px; background: #1a1a2e; border-top: 1px solid #2c2c4a; gap: 6px;
+    }
+    .chat-input-area input {
+      flex: 1; background: #252542; border: none; border-radius: 20px;
+      padding: 8px 14px; color: white; font-size: 13px; outline: none;
+    }
+    .chat-input-area button {
+      background: #fff; color: #000; border: none; border-radius: 50%;
+      width: 35px; height: 35px; cursor: pointer; font-weight: bold;
+    }
+
+    /* PANEL SECRETO DE ADMINISTRACIÓN */
+    #admin-panel {
+      display: none; width: 100%; max-width: 480px; background: #151528;
+      border: 2px solid #ff2a8d; border-radius: 16px; padding: 16px; margin-top: 20px; box-sizing: border-box;
+    }
+    #admin-panel h3 { color: #ff2a8d; margin-top: 0; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+  <!-- MODAL DE BIENVENIDA -->
+  <div id="welcome-modal">
+    <div class="modal-content">
+      <div class="modal-badge-r">R</div>
+      <h2>¡Únete a nuestra comunidad!</h2>
+      <p>Recibe promos exclusivas, sorteos, dinámicas y soporte directo por WhatsApp.</p>
+      <a href="https://whatsapp.com/channel/0029VbDQZWDJ93wOQ31NC63q" target="_blank" class="modal-btn-wa" onclick="cerrarModal()">
+        UNIRME AL CANAL ➔
+      </a>
+      <button class="modal-btn-close" onclick="cerrarModal()">Continuar a la página</button>
+    </div>
+  </div>
+
+  <header>
+    <h1>🎮 rv.asun.recargas 💎</h1>
+    <div class="sub-title">Tus recargas al instante y seguras</div>
+    <a href="https://whatsapp.com/channel/0029VbDQZWDJ93wOQ31NC63q" target="_blank" class="wa-channel-banner">
+      📢 Canal de WhatsApp (Dinámicas y Premios)
+    </a>
+  </header>
+
+  <div class="container">
+    
+    <!-- SECCIÓN DE PRODUCTOS ACTUALIZADOS -->
+    <div class="section-title">⚡ Diamantes Free Fire</div>
+    <div class="card-grid">
+      <div class="item-card"><h3>100 Diamantes</h3><div class="price">$3.500 COP</div><button class="buy-btn" onclick="seleccionar('100 Diamantes Free Fire ($3.500)')">Comprar</button></div>
+      <div class="item-card"><h3>300 Diamantes</h3><div class="price">$10.800 COP</div><button class="buy-btn" onclick="seleccionar('300 Diamantes Free Fire ($10.800)')">Comprar</button></div>
+      <div class="item-card"><h3>500 Diamantes</h3><div class="price">$17.000 COP</div><button class="buy-btn" onclick="seleccionar('500 Diamantes Free Fire ($17.000)')">Comprar</button></div>
+      <div class="item-card"><h3>1.000 Diamantes</h3><div class="price">$31.000 COP</div><button class="buy-btn" onclick="seleccionar('1.000 Diamantes Free Fire ($31.000)')">Comprar</button></div>
+      <div class="item-card"><h3>2.000 Diamantes</h3><div class="price">$60.000 COP</div><button class="buy-btn" onclick="seleccionar('2.000 Diamantes Free Fire ($60.000)')">Comprar</button></div>
+      <div class="item-card"><h3>6.000 Diamantes</h3><div class="price">$165.000 COP</div><button class="buy-btn" onclick="seleccionar('6.000 Diamantes Free Fire ($165.000)')">Comprar</button></div>
+    </div>
+
+    <div class="section-title">🎁 Pases y Objetos</div>
+    <div class="card-grid" style="grid-template-columns: 1fr;">
+      <div class="item-card"><h3>Pase Booyah / Evento</h3><div class="price">$6.500 COP</div><button class="buy-btn" onclick="seleccionar('Pase Booyah / Evento ($6.500)')">Comprar</button></div>
+    </div>
+
+    <div class="calc-box" style="margin-top: 15px;">
+      <h3>🔥 Tokens Evolutivos ($500 c/u - Mín. 35)</h3>
+      <div class="calc-controls">
+        <span>Cant:</span>
+        <input type="number" id="cant-tokens" value="35" min="35" oninput="calcT()">
+        <span class="calc-total" id="tot-tokens">$17.500 COP</span>
+      </div>
+      <button class="buy-btn" style="margin-top: 10px;" onclick="comprarT()">Comprar Tokens</button>
+    </div>
+
+    <div class="calc-box">
+      <h3>📦 Cajas Evolutivas ($1.000 c/u - Mín. 10)</h3>
+      <div class="calc-controls">
+        <span>Cant:</span>
+        <input type="number" id="cant-cajas" value="10" min="10" oninput="calcC()">
+        <span class="calc-total" id="tot-cajas">$10.000 COP</span>
+      </div>
+      <button class="buy-btn" style="margin-top: 10px;" onclick="comprarC()">Comprar Cajas</button>
+    </div>
+
+    <div class="section-title">❤️ Paquetes de Likes</div>
+    <div class="card-grid">
+      <div class="item-card"><h3>2.000 Likes</h3><div class="price">$19.000 COP</div><button class="buy-btn" onclick="seleccionar('2.000 Likes ($19.000)')">Comprar</button></div>
+      <div class="item-card"><h3>10.000 Likes</h3><div class="price">$65.000 COP</div><button class="buy-btn" onclick="seleccionar('10.000 Likes ($65.000)')">Comprar</button></div>
+      <div class="item-card" style="grid-column: span 2;"><h3>30.000 Likes</h3><div class="price">$160.000 COP</div><button class="buy-btn" onclick="seleccionar('30.000 Likes ($160.000)')">Comprar</button></div>
+    </div>
+
+    <div class="section-title">⭐ Reseñas Verificadas</div>
+    <div class="reviews-box">
+      <div class="review-item"><span class="review-author">@sebas_ff:</span> "100% confiable, mis diamantes llegaron en minutos 🔥"</div>
+      <div class="review-item"><span class="review-author">@valery_21:</span> "Compré el pase y todo super bien, recomendadísimo ✨"</div>
+    </div>
+
+    <!-- PANEL SECRETO DE CREADORA -->
+    <div id="admin-panel">
+      <h3>👑 Panel de Creadora (Modo Activo)</h3>
+      <p style="font-size: 12px; color: #a0a0c0;">Este panel reconoce tu dispositivo para administrar chats en vivo y pedidos.</p>
+      <div id="admin-orders-list" style="font-size: 12px; background: #0b0b16; padding: 10px; border-radius: 8px;">
+        Cargando chats y pedidos en tiempo real...
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTÓN FLOTANTE "R" -->
+  <div id="asun-floating-btn" onclick="toggleChat()">R</div>
+
+  <div id="asun-chat-box">
+    <div class="chat-header">
+      <div>Soporte RV Asun 🤖<span>● En línea • Chat en vivo</span></div>
+      <button class="close-chat" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg-bot">¡Hola! Soy el asistente virtual de <b>RV Asun Recargas</b>. Escribe tu ID y tu caso aquí para iniciar el chat en vivo con la creadora:</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." autocomplete="off">
+      <button onclick="enviarMensajeCliente()">➤</button>
+    </div>
+  </div>
+
+  <script>
+    function cerrarModal() { document.getElementById('welcome-modal').style.display = 'none'; }
+    function toggleChat() {
+      const box = document.getElementById("asun-chat-box");
+      box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+    function seleccionar(prod) {
+      toggleChat();
+      agregarMsg(`Hola, quiero comprar: <b>${prod}</b>. Mi ID de jugador es:`, 'bot');
+    }
+    function calcT() {
+      let v = document.getElementById('cant-tokens').value;
+      if(v < 35) v = 35;
+      document.getElementById('tot-tokens').innerText = '$' + (v * 500).toLocaleString('es-CO') + ' COP';
+    }
+    function comprarT() {
+      let v = document.getElementById('cant-tokens').value;
+      seleccionar(`${v} Tokens Evolutivos ($${(v * 500).toLocaleString('es-CO')} COP)`);
+    }
+    function calcC() {
+      let v = document.getElementById('cant-cajas').value;
+      if(v < 10) v = 10;
+      document.getElementById('tot-cajas').innerText = '$' + (v * 1000).toLocaleString('es-CO') + ' COP';
+    }
+    function comprarC() {
+      let v = document.getElementById('cant-cajas').value;
+      seleccionar(`${v} Cajas Evolutivas ($${(v * 1000).toLocaleString('es-CO')} COP)`);
+    }
+
+    function agregarMsg(txt, tipo) {
+      const c = document.getElementById("chat-messages");
+      const d = document.createElement("div");
+      d.className = tipo === 'bot' ? 'msg-bot' : (tipo === 'admin' ? 'msg-admin' : 'msg-user');
+      d.innerHTML = txt;
+      c.appendChild(d);
+      c.scrollTop = c.scrollHeight;
+    }
+
+    function enviarMensajeCliente() {
+      const input = document.getElementById("chat-input");
+      const txt = input.value.trim();
+      if(!txt) return;
+      agregarMsg(txt, 'user');
+      input.value = "";
+      
+      setTimeout(() => {
+        agregarMsg("✅ <b>¡Mensaje enviado a la creadora!</b> Te responderemos por aquí en breve.", "bot");
+      }, 800);
+    }
+
+    if (localStorage.getItem("asun_creator") === "true" || window.location.hash === "#admin") {
+      localStorage.setItem("asun_creator", "true");
+      document.getElementById("admin-panel").style.display = "block";
+      document.getElementById("admin-orders-list").innerHTML = "🟢 Conectada como Creadora. Chats activos sincronizados.";
+    }
+  </script>
+</body>
+</html>
